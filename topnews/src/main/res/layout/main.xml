@@ -18,7 +18,7 @@
             android:layout_height="40.0dip"
             android:layout_weight="1.0" >
 
-            <com.topnews.view.ColumnHorizontalScrollView
+            <com.yifeng.topnews.view.ColumnHorizontalScrollView
                 android:id="@+id/mColumnHorizontalScrollView"
                 android:layout_width="match_parent"
                 android:layout_height="40.0dip"
@@ -33,7 +33,7 @@
                     android:orientation="horizontal"
                     android:paddingLeft="10.0dip"
                     android:paddingRight="10.0dip" />
-            </com.topnews.view.ColumnHorizontalScrollView>
+            </com.yifeng.topnews.view.ColumnHorizontalScrollView>
 
             <ImageView
                 android:id="@+id/shade_left"
