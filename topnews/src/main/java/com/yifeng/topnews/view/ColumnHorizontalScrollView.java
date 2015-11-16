@@ -36,7 +36,7 @@ public class ColumnHorizontalScrollView extends HorizontalScrollView {
 		super(context, attrs, defStyle);
 	}
 	/** 
-	 * ���϶���ʱ��ִ��
+	 *
 	 * */
 	@Override
 	protected void onScrollChanged(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
@@ -65,7 +65,7 @@ public class ColumnHorizontalScrollView extends HorizontalScrollView {
 	   rightImage.setVisibility(View.VISIBLE);
 	}
 	/** 
-	 * ���븸�಼���е���Դ�ļ�
+	 *
 	 * */
 	public void setParam(Activity activity, int mScreenWitdh,View paramView1,ImageView paramView2, ImageView paramView3 ,View paramView4,View paramView5){
 		this.activity = activity;
@@ -76,13 +76,13 @@ public class ColumnHorizontalScrollView extends HorizontalScrollView {
 		ll_more = paramView4;
 		rl_column = paramView5;
 	}
-	/** 
-	 * �ж�������Ӱ����ʾ����Ч��
-	 * */
+
+	/**
+	 *
+	 */
 	public void shade_ShowOrHide() {
 		if (!activity.isFinishing() && ll_content != null) {
 			measure(0, 0);
-			//���������С����Ļ��ȵĻ�����������Ӱ������
 			if (mScreenWitdh >= getMeasuredWidth()) {
 				leftImage.setVisibility(View.GONE);
 				rightImage.setVisibility(View.GONE);
@@ -90,13 +90,11 @@ public class ColumnHorizontalScrollView extends HorizontalScrollView {
 		} else {
 			return;
 		}
-		//��������������ʱ�������Ӱ���أ��ұ���ʾ
 		if (getLeft() == 0) {
 			leftImage.setVisibility(View.GONE);
 			rightImage.setVisibility(View.VISIBLE);
 			return;
 		}
-		//������������ұ�ʱ�������Ӱ��ʾ���ұ�����
 		if (getRight() == getMeasuredWidth() - mScreenWitdh) {
 			leftImage.setVisibility(View.VISIBLE);
 			rightImage.setVisibility(View.GONE);
