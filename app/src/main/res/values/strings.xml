@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">chaoshibang</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="startlocation">开始定位</string>
+    <string name="stoplocation">停止定位</string>
+</resources>
