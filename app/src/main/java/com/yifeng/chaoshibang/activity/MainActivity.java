@@ -27,9 +27,9 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        LocationResult = (TextView) findViewById(R.id.textView1);
-        LocationResult.setMovementMethod(ScrollingMovementMethod.getInstance());
-        startLocation = (Button) findViewById(R.id.addfence);
+//        LocationResult = (TextView) findViewById(R.id.textView1);
+//        LocationResult.setMovementMethod(ScrollingMovementMethod.getInstance());
+//        startLocation = (Button) findViewById(R.id.addfence);
     }
 
     @Override
@@ -46,6 +46,7 @@ public class MainActivity extends BaseActivity {
         } else if (type == 1) {
             locationService.setLocationOption(locationService.getOption());
         }
+        /*
         startLocation.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -61,6 +62,7 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
+        */
     }
 
     /***
