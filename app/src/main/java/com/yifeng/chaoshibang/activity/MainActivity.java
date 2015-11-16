@@ -1,9 +1,16 @@
 package com.yifeng.chaoshibang.activity;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.baidu.location.BDLocation;
@@ -14,14 +21,27 @@ import com.yifeng.chaoshibang.R;
 import com.yifeng.chaoshibang.service.BaiduLocationService;
 import com.yifeng.chaoshibang.utils.LogUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by donggua on 2015/11/10.
  */
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener {
 
     private BaiduLocationService locationService;
     private TextView LocationResult;
     private Button startLocation;
+
+    private ViewPager viewPager;
+    private PagerAdapter pagerAdapter;
+    private TabHost tabHost;
+    private int[] titles = {};
+
+    public static int TAB_INDEX_CHAOSHI = 0;
+    public static int TAB_INDEX_IRDER = 1;
+    public static int TAB_INDEX_DISCOVERY = 2;
+    public static int TAB_INDEX_PERSONAL = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +50,25 @@ public class MainActivity extends BaseActivity {
 //        LocationResult = (TextView) findViewById(R.id.textView1);
 //        LocationResult.setMovementMethod(ScrollingMovementMethod.getInstance());
 //        startLocation = (Button) findViewById(R.id.addfence);
+
+        initViewPager();
+    }
+
+    /**
+     * 初始化viewpager，用于滑动改变页面
+     */
+    private void initViewPager() {
+        pagerAdapter = new MyPagerAdapter(getSupportFragmentManager(), initFragments());
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.setOnPageChangeListener(this);
+    }
+
+    /**
+     * 初始化需要的四个Fragment
+     */
+    private List<Fragment> initFragments() {
+        List<Fragment> list = new ArrayList<Fragment>();
+        return list;
     }
 
     @Override
@@ -94,6 +133,26 @@ public class MainActivity extends BaseActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+    @Override
+    public void onTabChanged(String tabId) {
+
     }
 
     /**
@@ -179,4 +238,26 @@ public class MainActivity extends BaseActivity {
             }
         }
     };
+
+    /**
+     * 自定义PagerAdapter
+     */
+    private class MyPagerAdapter extends FragmentPagerAdapter {
+        private List<Fragment> fragments;
+
+        public MyPagerAdapter(FragmentManager fm, List<Fragment> fragments) {
+            super(fm);
+            this.fragments = fragments;
+        }
+
+        @Override
+        public int getCount() {
+            return fragments.size();
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return fragments.get(position);
+        }
+    }
 }
