@@ -57,6 +57,7 @@ public class MainActivity extends BaseActivity {
                 } else {
                     locationService.stop();
                     startLocation.setText(getString(R.string.startlocation));
+                    LocationResult.setText("");
                 }
             }
         });

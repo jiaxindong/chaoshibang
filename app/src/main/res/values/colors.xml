@@ -1,4 +1,5 @@
 <resources>
     <color name="blue_toolbar">#0095e0</color>
     <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
 </resources>
