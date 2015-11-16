@@ -6,9 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.method.ScrollingMovementMethod;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -18,6 +15,10 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.Poi;
 import com.yifeng.chaoshibang.ChaoshibangApplication;
 import com.yifeng.chaoshibang.R;
+import com.yifeng.chaoshibang.fragment.ChaoshiFragment;
+import com.yifeng.chaoshibang.fragment.DiscoveryFragment;
+import com.yifeng.chaoshibang.fragment.OrderFragment;
+import com.yifeng.chaoshibang.fragment.PersonalFragment;
 import com.yifeng.chaoshibang.service.BaiduLocationService;
 import com.yifeng.chaoshibang.utils.LogUtil;
 
@@ -52,15 +53,18 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
 //        startLocation = (Button) findViewById(R.id.addfence);
 
         initViewPager();
+        initTabHost();
     }
 
     /**
      * 初始化viewpager，用于滑动改变页面
      */
     private void initViewPager() {
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
         pagerAdapter = new MyPagerAdapter(getSupportFragmentManager(), initFragments());
         viewPager.setAdapter(pagerAdapter);
-        viewPager.setOnPageChangeListener(this);
+        viewPager.addOnPageChangeListener(this);
+        viewPager.setOffscreenPageLimit(4);
     }
 
     /**
@@ -68,7 +72,27 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
      */
     private List<Fragment> initFragments() {
         List<Fragment> list = new ArrayList<Fragment>();
+        list.add(new ChaoshiFragment());
+        list.add(new OrderFragment());
+        list.add(new DiscoveryFragment());
+        list.add(new PersonalFragment());
         return list;
+    }
+
+    /**
+     * 初始化TabHost
+     */
+    private void initTabHost() {
+        tabHost = (TabHost) findViewById(android.R.id.tabhost);
+        tabHost.setup();
+        //去掉分割线
+        tabHost.getTabWidget().setDividerDrawable(null);
+        //在bottom上面加一条分割线，背景设为divider，每个tab_indicator设置margin_top
+        int color = getResources().getColor(R.color.divider);
+        tabHost.getTabWidget().setBackgroundColor(color);
+
+        //增加4个tab
+
     }
 
     @Override
