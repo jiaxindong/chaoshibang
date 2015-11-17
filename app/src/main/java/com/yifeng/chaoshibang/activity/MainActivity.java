@@ -1,12 +1,16 @@
 package com.yifeng.chaoshibang.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -37,10 +41,10 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
     private ViewPager viewPager;
     private PagerAdapter pagerAdapter;
     private TabHost tabHost;
-    private int[] titles = {};
+    private int[] titles = { R.string.tab_title_0, R.string.tab_title_1, R.string.tab_title_2, R.string.tab_title_3 };
 
     public static int TAB_INDEX_CHAOSHI = 0;
-    public static int TAB_INDEX_IRDER = 1;
+    public static int TAB_INDEX_ORDER = 1;
     public static int TAB_INDEX_DISCOVERY = 2;
     public static int TAB_INDEX_PERSONAL = 3;
 
@@ -92,7 +96,27 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         tabHost.getTabWidget().setBackgroundColor(color);
 
         //增加4个tab
+        addTab(getString(titles[0]), R.drawable.selector_tab_0);
+        addTab(getString(titles[1]), R.drawable.selector_tab_1);
+        addTab(getString(titles[2]), R.drawable.selector_tab_2);
+        addTab(getString(titles[3]), R.drawable.selector_tab_3);
 
+        //注册Tab页切换事件
+        tabHost.setOnTabChangedListener(this);
+    }
+
+    //添加tab页选项
+    private void addTab(String title, int iconId) {
+        //TabSpec表示Tab中的一页
+        TabHost.TabSpec spec = tabHost.newTabSpec(title);
+        View indicator = LayoutInflater.from(this).inflate(R.layout.tab_indicator, tabHost.getTabWidget(), false);
+        TextView textView = (TextView) indicator.findViewById(R.id.indicator_title);
+        textView.setText(title);
+        ImageView imageView = (ImageView) indicator.findViewById(R.id.indicator_icon);
+        imageView.setImageResource(iconId);
+        spec.setIndicator(indicator);
+        spec.setContent(new MyTabContentFactory(this));
+        tabHost.addTab(spec);
     }
 
     @Override
@@ -164,9 +188,13 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
 
     }
 
+    /**
+     * 设置滑动的同时Tab页的切换
+     */
     @Override
     public void onPageSelected(int position) {
-
+        int pos = viewPager.getCurrentItem();
+        tabHost.setCurrentTab(pos);
     }
 
     @Override
@@ -174,9 +202,25 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
 
     }
 
+    /**
+     * 点击切换Tab页的响应
+     */
     @Override
     public void onTabChanged(String tabId) {
+        int pos = tabHost.getCurrentTab();
+        viewPager.setCurrentItem(pos, false);
 
+        //TODO
+        //根据不同的页面设置不同的标题内容
+        if(pos == TAB_INDEX_CHAOSHI) {
+
+        } else if(pos == TAB_INDEX_ORDER) {
+
+        } else if(pos == TAB_INDEX_DISCOVERY) {
+
+        } else if(pos == TAB_INDEX_PERSONAL) {
+
+        }
     }
 
     /**
@@ -282,6 +326,22 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         @Override
         public Fragment getItem(int position) {
             return fragments.get(position);
+        }
+    }
+
+    private class MyTabContentFactory implements TabHost.TabContentFactory {
+        private Context context;
+
+        public MyTabContentFactory(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public View createTabContent(String tag) {
+            View view = new View(context);
+            view.setMinimumHeight(0);
+            view.setMinimumWidth(0);
+            return view;
         }
     }
 }

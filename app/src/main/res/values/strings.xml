@@ -5,4 +5,11 @@
     <string name="action_settings">Settings</string>
     <string name="startlocation">开始定位</string>
     <string name="stoplocation">停止定位</string>
+    
+    <!-- 底部Tab项字段 -->
+    <string name="tab_title_0">超市</string>
+    <string name="tab_title_1">订单</string>
+    <string name="tab_title_2">发现</string>
+    <string name="tab_title_3">我的</string>
+
 </resources>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="0dp"
+    android:layout_height="60dp"
+    android:layout_weight="1"
+    android:background="@drawable/selector_tab_bg" >
+
+    <ImageView
+        android:id="@+id/indicator_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/indicator_title"
+        android:layout_below="@id/indicator_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/selector_tab_text" />
+
+</RelativeLayout>
