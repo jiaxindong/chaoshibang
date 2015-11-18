@@ -40,6 +40,12 @@
             </RelativeLayout>
         </LinearLayout>
 
+        <com.yifeng.chaoshibang.widget.HomeAdverViewPager
+            android:id="@+id/adver_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+        </com.yifeng.chaoshibang.widget.HomeAdverViewPager>
+
 
     </ScrollView>
 
