@@ -48,7 +48,7 @@
             android:value="HGXlZyA2DhAoWbrUCOHe21sd" />
 
         <activity
-            android:name="com.yifeng.chaoshibang.activity.MainActivity"
+            android:name="com.yifeng.chaoshibang.activity.SplashActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -56,6 +56,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".activity.MainActivity"
+            android:label="MainActivity">
+        </activity>
     </application>
 
 </manifest>
