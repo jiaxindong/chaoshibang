@@ -11,6 +11,10 @@
     <string name="tab_title_1">订单</string>
     <string name="tab_title_2">发现</string>
     <string name="tab_title_3">我的</string>
+<<<<<<< HEAD
     <string name="version">1.0</string>
+=======
+    <string name="title_activity_login_with_verifycode">无密码快捷登录</string>
+>>>>>>> 500b57fff3c5e8a6bbef0cf50e0efee1f9d00815
 
 </resources>
