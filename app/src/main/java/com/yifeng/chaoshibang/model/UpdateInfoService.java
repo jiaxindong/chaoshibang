@@ -10,13 +10,11 @@ public class UpdateInfoService {
 	
 	private Context context;
 
-	public UpdateInfoService(Context context)
-	{
+	public UpdateInfoService(Context context) {
 		this.context = context;
 	}
 
-	public UpdateInfo getUpdateInfo(int urlId) throws Exception
-	{
+	public UpdateInfo getUpdateInfo(int urlId) throws Exception {
 		String path = context.getResources().getString(urlId);////拿到config.xml里面存放的地址
 		URL url = new URL(path);
 		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();//开启一个http链接

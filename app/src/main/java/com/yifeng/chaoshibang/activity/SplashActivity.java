@@ -1,6 +1,9 @@
 package com.yifeng.chaoshibang.activity;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -90,6 +93,9 @@ public class SplashActivity extends BaseActivity {
 		}
 	}
 
+	/**
+	 * 获取当前程序的版本号
+	 */
 	private String getVersion() {
 		
 		try {
@@ -228,8 +234,19 @@ public class SplashActivity extends BaseActivity {
 	 * 0.4以后不能在主线程处理网络相关
 	 */
 	private class UpdateHandler implements Runnable {
-		Message msg = new Message();
-		public Handler handler;
+
+		public Handler handler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				super.handleMessage(msg);
+				Log.i("SplashActivity", msg.what+"");
+				switch (msg.what) {
+					case 1:
+						showUpdateDialog();
+						break;
+				}
+			}
+		};
 
 		@Override
 		public void run() {
@@ -239,21 +256,10 @@ public class SplashActivity extends BaseActivity {
 			 * and then loop() to have it process messages until the loop is stopped. 
 			 */
 			Looper.prepare();
-			
+			Message msg = new Message();
 			if(isNeedUpdate(getVersion())) {
 				msg.what = 1;
 			}
-			handler = new Handler() {
-				public void handleMessage(Message msg) {
-					super.handleMessage(msg);
-					Log.i("SplashActivity", msg.what+"");
-					switch (msg.what) {
-					case 1:
-						showUpdateDialog();
-						break;
-					}
-				}
-			};
 			handler.sendMessage(msg);
 			Looper.loop();
 		}
