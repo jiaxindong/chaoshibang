@@ -12,6 +12,7 @@
             android:id="@+id/search_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:background="@color/green" >
 
             <RelativeLayout
@@ -38,14 +39,14 @@
                     android:src="@drawable/icon_search"/>
 
             </RelativeLayout>
+
+            <com.yifeng.chaoshibang.widget.HomeAdverViewPager
+                android:id="@+id/adver_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+            </com.yifeng.chaoshibang.widget.HomeAdverViewPager>
+
         </LinearLayout>
-
-        <com.yifeng.chaoshibang.widget.HomeAdverViewPager
-            android:id="@+id/adver_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-        </com.yifeng.chaoshibang.widget.HomeAdverViewPager>
-
 
     </ScrollView>
 

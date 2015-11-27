@@ -230,6 +230,7 @@ public class SplashActivity extends BaseActivity {
 	private class UpdateHandler implements Runnable {
 		Message msg = new Message();
 		public Handler handler;
+
 		@Override
 		public void run() {
 			/* Class used to run a message loop for a thread. 
