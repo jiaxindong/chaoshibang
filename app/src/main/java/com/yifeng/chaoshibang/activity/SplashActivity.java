@@ -1,9 +1,6 @@
 package com.yifeng.chaoshibang.activity;
 
 import java.io.File;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -18,13 +15,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,7 +31,6 @@ public class SplashActivity extends BaseActivity {
 	private LinearLayout ll;
 	private ProgressDialog progressDialog;
 	private UpdateInfo info;
-	private String version;
 	private static final String TAG = "SplashActivity";
 	
 	@Override
@@ -58,46 +48,10 @@ public class SplashActivity extends BaseActivity {
 		thread.start();
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_main, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class PlaceholderFragment extends Fragment {
-
-		public PlaceholderFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-			return rootView;
-		}
-	}
-
 	/**
 	 * 获取当前程序的版本号
 	 */
 	private String getVersion() {
-		
 		try {
 			PackageManager packageManager = getPackageManager();
 			PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
@@ -193,7 +147,6 @@ public class SplashActivity extends BaseActivity {
 				loadMainUI();
 			}
 		}
-
 	}
 
 	private boolean isNeedUpdate(String version) {
