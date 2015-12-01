@@ -1,28 +1,20 @@
 package com.yifeng.chaoshibang.service;
 
-import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
-import android.os.Environment;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Parcel;
-import android.os.RemoteException;
-import android.util.Log;
 
 import com.yifeng.chaoshibang.Config;
 import com.yifeng.chaoshibang.interfaces.OnProgressListener;
 import com.yifeng.chaoshibang.utils.FileUtil;
-import com.yifeng.chaoshibang.utils.LogUtil;
 
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class DownloadFileService extends Service {
+public class DownloadFileService extends BaseService {
 
     private String urlPath="";
     //文件存储
@@ -41,6 +33,7 @@ public class DownloadFileService extends Service {
      */
     @Override
     public IBinder onBind(Intent intent) {
+        super.onBind(intent);
         return new DownloadBinder();
     }
 
@@ -56,7 +49,6 @@ public class DownloadFileService extends Service {
         if(FileUtil.haveSDCard()) {
             updateFile = FileUtil.getFile(Config.sd_folder_name, Config.sd_apk_name);
         }
-
         //开启一个新的线程下载，如果使用Service同步下载，会导致ANR问题，Service本身也会阻塞
         new Thread(new DownloadRunnable()).start();
         return super.onStartCommand(intent, flags, startId);
@@ -75,7 +67,9 @@ public class DownloadFileService extends Service {
                 httpURLConnection.setRequestMethod("GET");
                 if(httpURLConnection.getResponseCode() == 200) {
                     int total = httpURLConnection.getContentLength();
-
+                    if(onProgressListener != null) {
+                        onProgressListener.onProgressInitialize(total);
+                    }
                     input = httpURLConnection.getInputStream();
                     fos = new FileOutputStream(updateFile);
                     byte[] buffer = new byte[1024];
@@ -85,18 +79,14 @@ public class DownloadFileService extends Service {
                         fos.write(buffer, 0, len);
                         progress += len;
                         //进度发生变化通知调用方
-                        LogUtil.d("abc", "onProgressListenerppp");
                         if(onProgressListener != null){
-                            LogUtil.d("abc", "onProgressListener");
-                            onProgressListener.onProgressUpdate(progress, total);
+                            onProgressListener.onProgressUpdate(progress);
                         }
                     }
                     fos.flush();
                     if(onProgressListener != null){
-                        onProgressListener.onProgressComplete(true);
+                        onProgressListener.onProgressComplete(updateFile);
                     }
-
-
                 }
             } catch (Exception e) {
                 e.printStackTrace();
