@@ -59,7 +59,6 @@ public class SplashActivity extends BaseActivity {
 					progressDialog.setMax(total);
 				progressDialog.setProgress(progress);
 			}
-
 				@Override
 				public void onProgressComplete(boolean isCompleted) {
 					progressDialog.dismiss();
@@ -70,7 +69,6 @@ public class SplashActivity extends BaseActivity {
 
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
-
 		}
 	};
 
@@ -146,7 +144,8 @@ public class SplashActivity extends BaseActivity {
 					//new DownloadFileTask().execute(info.getUrl(), apkPath);
 
 					//绑定DownloadFileService
-					Intent intent = new Intent("com.yifeng.chaoshibang.service.DOWNLOAD_APK_ACTION");
+					//Intent intent = new Intent("com.yifeng.chaoshibang.service.DOWNLOAD_APK_ACTION");
+					Intent intent = new Intent(SplashActivity.this, DownloadFileService.class);
 					intent.putExtra("url", info.getUrl());
 					bindService(intent, conn, Context.BIND_AUTO_CREATE);
 					progressDialog.show();
