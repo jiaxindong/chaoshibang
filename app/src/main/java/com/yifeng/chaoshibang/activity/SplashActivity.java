@@ -5,11 +5,15 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ServiceConfigurationError;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -18,6 +22,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
@@ -27,9 +32,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yifeng.chaoshibang.R;
+import com.yifeng.chaoshibang.interfaces.OnProgressListener;
 import com.yifeng.chaoshibang.model.DownloadTask;
 import com.yifeng.chaoshibang.model.UpdateInfo;
 import com.yifeng.chaoshibang.model.UpdateInfoService;
+import com.yifeng.chaoshibang.service.DownloadFileService;
+import com.yifeng.chaoshibang.utils.LogUtil;
 
 public class SplashActivity extends BaseActivity {
 	private TextView tv_version;
@@ -37,7 +45,35 @@ public class SplashActivity extends BaseActivity {
 	private ProgressDialog progressDialog;
 	private UpdateInfo info;
 	private static final String TAG = "SplashActivity";
-	
+	private DownloadFileService downloadFileService;
+
+	ServiceConnection conn = new ServiceConnection() {
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			//返回一个DownloadFileService对象
+			downloadFileService = ((DownloadFileService.DownloadBinder)service).getService();
+			//注册回调接口来接收下载进度的变化
+			downloadFileService.setOnProgressListener(new OnProgressListener() {
+				@Override
+				public void onProgressUpdate(int progress, int total) {
+					progressDialog.setMax(total);
+				progressDialog.setProgress(progress);
+			}
+
+				@Override
+				public void onProgressComplete(boolean isCompleted) {
+					progressDialog.dismiss();
+					unbindService(conn);
+				}
+			});
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+
+		}
+	};
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -55,6 +91,23 @@ public class SplashActivity extends BaseActivity {
 //		if(isNeedUpdate(getVersion())) {
 //			showUpdateDialog();
 //		}
+
+	}
+
+	class UpdateHandler implements Runnable {
+		@Override
+		public void run() {
+			Looper.prepare();
+			if(isNeedUpdate(getVersion())) {
+				showUpdateDialog();
+			}
+			Looper.loop();
+		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
 	}
 
 	/**
@@ -64,9 +117,7 @@ public class SplashActivity extends BaseActivity {
 		try {
 			PackageManager packageManager = getPackageManager();
 			PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
-
 			return packageInfo.versionName;
-
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
 			return "版本号未知";
@@ -75,17 +126,14 @@ public class SplashActivity extends BaseActivity {
 
 	private void showUpdateDialog() {
 		
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this);
 		builder.setIcon(android.R.drawable.ic_dialog_info);
-		builder.setTitle("升级提醒");
-		builder.setMessage(info.getDescription());
 		builder.setCancelable(false);
 
 		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
 				if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 					File dir = new File(Environment.getExternalStorageDirectory(), "/chaoshibang/update");
 					if(!dir.exists()) {
@@ -95,7 +143,14 @@ public class SplashActivity extends BaseActivity {
 //					UpdateTask task = new UpdateTask(info.getUrl(), apkPath);
 //					progressDialog.show();
 //					new Thread(task).start();
-					new DownloadFileTask().execute(info.getUrl(), apkPath);
+					//new DownloadFileTask().execute(info.getUrl(), apkPath);
+
+					//绑定DownloadFileService
+					Intent intent = new Intent("com.yifeng.chaoshibang.service.DOWNLOAD_APK_ACTION");
+					intent.putExtra("url", info.getUrl());
+					bindService(intent, conn, Context.BIND_AUTO_CREATE);
+					progressDialog.show();
+
 				} else {
 					Toast.makeText(SplashActivity.this, "SD卡不可用，请插入SD卡", Toast.LENGTH_SHORT).show();
 					loadMainUI();
@@ -106,7 +161,6 @@ public class SplashActivity extends BaseActivity {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
 				loadMainUI();
 			}
 
@@ -161,6 +215,7 @@ public class SplashActivity extends BaseActivity {
 
 	private boolean isNeedUpdate(String version) {
 		UpdateInfoService updateInfoService = new UpdateInfoService(this);
+		LogUtil.d("SplashActivity", "version = " + version);
 		try {
 			info = updateInfoService.getUpdateInfo(R.string.serverUrl);
 			String v = info.getVersion();
@@ -190,42 +245,6 @@ public class SplashActivity extends BaseActivity {
 		AlphaAnimation alphaAnimation = new AlphaAnimation(0.0f, 1.0f);
 		alphaAnimation.setDuration(2000);
 		ll.startAnimation(alphaAnimation);
-	}
-
-	/**
-	 * 查询更新的线程
-	 * 0.4以后不能在主线程处理网络相关
-	 */
-	private class UpdateHandler implements Runnable {
-
-		public Handler handler = new Handler() {
-			@Override
-			public void handleMessage(Message msg) {
-				super.handleMessage(msg);
-				Log.i("SplashActivity", msg.what+"");
-				switch (msg.what) {
-					case 1:
-						showUpdateDialog();
-						break;
-				}
-			}
-		};
-
-		@Override
-		public void run() {
-			/* Class used to run a message loop for a thread. 
-			 * Threads by default do not have a message loop associated with them; 
-			 * to create one, call prepare() in the thread that is to run the loop, 
-			 * and then loop() to have it process messages until the loop is stopped. 
-			 */
-			Looper.prepare();
-			Message msg = new Message();
-			if(isNeedUpdate(getVersion())) {
-				msg.what = 1;
-			}
-			handler.sendMessage(msg);
-			Looper.loop();
-		}
 	}
 
 	private class DownloadFileTask extends AsyncTask<String, Integer, File> {
@@ -277,7 +296,6 @@ public class SplashActivity extends BaseActivity {
 					while((len = is.read(buffer)) != -1) {
 						fos.write(buffer, 0, len);
 						process += len;
-						//progressDialog.setProgress(process);
 						publishProgress(process, total);
 					}
 					fos.flush();
@@ -286,7 +304,7 @@ public class SplashActivity extends BaseActivity {
 					return file;
 				}
 			} catch (Exception e) {
-
+				e.printStackTrace();
 			}
 			return null;
 		}
